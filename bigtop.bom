@@ -118,12 +118,31 @@ bigtop {
       'oozie', 'solr', 'spark',
       'phoenix', 'alluxio', 'ycsb', 'zeppelin'
     ],
+    kudu:['hadoop','hive'],
+    impala:['hadoop','hive','hbase']
     hbase:['phoenix', 'ycsb', 'hive'],
     hive:['oozie', 'zeppelin'],
     spark:['livy', 'oozie', 'zeppelin'],
   ]
 
   components {
+    'kudu'{
+      name = 'kudu'
+      version{
+       base = '1.15.0'
+       pkg = base
+       release = 1
+      }
+      tarball{
+      source = "apache-${name}-${version.base}.tar.gz"
+      destination= source
+      }
+      url{
+      download_path = "/${name}/${version.base}"
+      site  = "${apache.APACHE_MIRROR}/${download_path}"
+      archive = "${apache.APACHE_ARCHIVE}/${download_path}"
+      }
+    }
     'zookeeper' {
       name    = 'zookeeper'
       pkg     = name
@@ -145,21 +164,21 @@ bigtop {
     'hadoop' {
       name    = 'hadoop'
       relNotes = 'Apache Hadoop'
-      version { base = '3.2.2'; pkg = base; release = 1 }
+      version { base = '3.1.1'; pkg = base; release = 1 }
       tarball { destination = "${name}-${version.base}.tar.gz"
                 source      = "${name}-${version.base}-src.tar.gz" }
-      url     { download_path = "/$name/common/$name-${version.base}"
-                site = "${apache.APACHE_MIRROR}/${download_path}"
+      url     { download_path = "$name/common/$name-${version.base}"
+                site = "${apache.APACHE_ARCHIVE}/${download_path}"
                 archive = "${apache.APACHE_ARCHIVE}/${download_path}" }
     }
     'hbase' {
       name    = 'hbase'
       relNotes = 'Apache HBase'
-      version { base = '2.2.6'; pkg = base; release = 1 }
+      version { base = '2.0.2'; pkg = base; release = 1 }
       tarball { destination = "${name}-${version.base}.tar.gz"
                 source      = "${name}-${version.base}-src.tar.gz" }
-      url     { download_path = "/$name/${version.base}/"
-                site = "${apache.APACHE_MIRROR}/${download_path}"
+      url     { download_path = "$name/${version.base}/"
+                site = "${apache.APACHE_ARCHIVE}/${download_path}"
                 archive = "${apache.APACHE_ARCHIVE}/${download_path}" }
     }
 
@@ -176,11 +195,11 @@ bigtop {
     'tez' {
       name    = 'tez'
       relNotes = 'Apache TEZ'
-      version { base = '0.10.0'; pkg = base; release = 1 }
+      version { base = '0.9.1'; pkg = base; release = 1 }
       tarball { destination = "apache-${name}-${version.base}-src.tar.gz"
                 source      = destination }
       url     { download_path = "/$name/${version.base}/"
-                site = "${apache.APACHE_MIRROR}/${download_path}"
+                site = "${apache.APACHE_ARCHIVE}/${download_path}"
                 archive = "${apache.APACHE_ARCHIVE}/${download_path}" }
     }
     'sqoop' {
@@ -196,7 +215,7 @@ bigtop {
     'oozie' {
       name    = 'oozie'
       relNotes = 'Apache Oozie'
-      version { base = '5.2.1'; pkg = base; release = 1 }
+      version { base = '4.4.0'; pkg = base; release = 1 }
       tarball { destination = "$name-${version.base}.tar.gz"
                 source      = destination }
       url     { download_path = "/$name/${version.base}/"
@@ -329,7 +348,7 @@ bigtop {
     'ambari' {
       name    = 'ambari'
       relNotes = 'Apache Ambari'
-      version { base = '2.7.5'; pkg = '2.7.5.0'; release = 1 }
+      version { base = '2.7.4'; pkg = '2.7.4.0'; release = 1 }
       tarball { destination = "apache-$name-${version.base}-src.tar.gz"
                 source      = destination }
       url     { download_path = "/$name/$name-${version.base}/"
@@ -339,7 +358,7 @@ bigtop {
     'bigtop-ambari-mpack' {
       name    = 'bigtop-ambari-mpack'
       relNotes = 'Bigtop Mpack'
-      version { base = '2.7.5'; pkg = '2.7.5.0'; release = 1 }
+      version { base = '2.7.4'; pkg = '2.7.4.0'; release = 1 }
       tarball { destination = "apache-ambari-${version.base}-src.tar.gz"
                 source      = destination }
       url     { download_path = "/ambari/ambari-${version.base}/"
