@@ -1,0 +1,63 @@
+#!/bin/bash
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set -e
+trap 'echo Error in $0 at line $LINENO: $(cd "'$PWD'" && awk "NR == $LINENO" $0)' ERR
+
+export IMPALA_HOME=`pwd`
+export DISABLE_CCACHE=1
+export IMPALA_TOOLCHAIN=$IMPALA_HOME/toolchain
+
+function clean_cmake_files {
+  find . -iname '*cmake*' -not -name CMakeLists.txt \
+      | grep -v -e cmake_module \
+      | grep -v -e thirdparty \
+      | grep -v -e toolchain \
+      | xargs rm -Rf
+}
+
+if [ -z "$GIT_REPO" ]; then
+    cd $IMPALA_HOME
+    . bin/impala-config.sh
+
+    # Don't run $IMPALA_HOME/bin/clean.sh because that uses git commands and this isn't
+    # a git repo.
+    clean_cmake_files
+
+    # Setting CAULDRON_IMPALA_PARTIAL_BUILD_0=true makes the buildall.sh script, that's
+    # called below, just build the Impala Frontend, which is Java-only and fast.
+    CAULDRON_BUILD_FLAG=""
+    if [ -n "${CAULDRON_IMPALA_PARTIAL_BUILD_0}" ]; then
+      CAULDRON_BUILD_FLAG="-fe_only"
+    fi
+
+    ./buildall.sh -noclean -notests ${CAULDRON_BUILD_FLAG}   # Debug build.
+
+    if [ -n "${CAULDRON_IMPALA_PARTIAL_BUILD_0}" ]; then
+      echo "CAULDRON_IMPALA_PARTIAL_BUILD_0 is set - skipping the rest of build"
+      exit 0
+    fi
+
+    # Don't clean non-cmake artifacts, the debug binaries will be packaged.
+    clean_cmake_files
+    ./bin/make_release.sh -notests -build_static_libs
+else
+    rm -rf build impala-${FULL_VERSION}
+    ALL_FILES=`echo *`
+    mkdir build impala-${FULL_VERSION}
+    cp -r $ALL_FILES impala-${FULL_VERSION}
+    tar czf build/impala-${FULL_VERSION}.tar.gz impala-${FULL_VERSION}
+fi

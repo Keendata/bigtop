@@ -82,18 +82,18 @@ URL: http://www.cloudera.com
 Group: Development/Libraries
 Buildroot: %{_topdir}/INSTALL/%{name}-%{version}
 License: ASL 2.0
-Source0: impala-%{impala_patched_version}.tar.gz
+Source0: apache-impala-%{impala_version}.tar.gz
 Source1: do-component-build
 Source2: install_impala.sh
 Source3: filter-requires.sh
-Source4: init.d.tmpl
+#Source4: init.d.tmpl
 Source5: impala.conf
 Source6: impalad.svc
 Source7: statestored.svc
 Source8: catalogd.svc
-Source9: packaging_functions.sh
+#Source9: packaging_functions.sh
 Requires: bigtop-utils >= 0.7, /usr/sbin/useradd, /usr/sbin/usermod, openssl
-Requires: hadoop, hadoop-hdfs, hadoop-yarn, hadoop-mapreduce, hbase, hive >= 0.12.0+cdh5.1.0, zookeeper, hadoop-libhdfs, avro-libs, parquet, sentry >= 1.3.0+cdh5.1.0
+Requires: hadoop, hadoop-hdfs, hadoop-yarn, hadoop-mapreduce, hbase, hive, zookeeper, hadoop-libhdfs, avro-libs, parquet, sentry
 Requires: avro-libs, parquet, sentry, cyrus-sasl-plain
 
 # Sles12 is version 1315, not 1200 or 12
@@ -185,13 +185,13 @@ Impala Catalog server
 %endif
 
 %prep
-%setup -n %{name}-%{impala_patched_version}
+%setup -n apache-%{name}-%{impala_version}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %build
-env FULL_VERSION=%{impala_patched_version} bash %{SOURCE1}
+env FULL_VERSION=%{impala_version} bash %{SOURCE1}
 
 %install
 %__rm -rf $RPM_BUILD_ROOT

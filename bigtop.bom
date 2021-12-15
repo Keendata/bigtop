@@ -119,13 +119,30 @@ bigtop {
       'phoenix', 'alluxio', 'ycsb', 'zeppelin'
     ],
     kudu:['hadoop','hive'],
-    impala:['hadoop','hive','hbase']
+    impala:['hadoop','hive','hbase'],
     hbase:['phoenix', 'ycsb', 'hive'],
     hive:['oozie', 'zeppelin'],
     spark:['livy', 'oozie', 'zeppelin'],
   ]
 
   components {
+  'impala'{
+        name = 'impala'
+        version{
+         base = '3.4.0'
+         pkg = base
+         release = 1
+        }
+        tarball{
+        source = "apache-impala-${version.base}.tar.gz"
+        destination= source
+        }
+        url{
+        download_path = "impala/${version.base}"
+        site  = "${apache.APACHE_MIRROR}/${download_path}"
+        archive = "${apache.APACHE_ARCHIVE}/${download_path}"
+        }
+      }
     'kudu'{
       name = 'kudu'
       version{
@@ -134,11 +151,11 @@ bigtop {
        release = 1
       }
       tarball{
-      source = "apache-${name}-${version.base}.tar.gz"
+      source = "apache-kudu-${version.base}.tar.gz"
       destination= source
       }
       url{
-      download_path = "/${name}/${version.base}"
+      download_path = "kudu/${version.base}"
       site  = "${apache.APACHE_MIRROR}/${download_path}"
       archive = "${apache.APACHE_ARCHIVE}/${download_path}"
       }

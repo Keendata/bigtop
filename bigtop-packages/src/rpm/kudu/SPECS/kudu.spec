@@ -34,7 +34,7 @@ URL: http://www.cloudera.com
 Group: Development/Libraries
 Buildroot: %{_topdir}/INSTALL/%{name}-%{version}
 License: ASL 2.0
-Source0: kudu-%{kudu_patched_version}.tar.gz
+Source0: apache-kudu-%{kudu_version}.tar.gz
 Source1: do-component-build
 Source2: install_kudu.sh
 Source3: kudu-master.init
@@ -89,13 +89,13 @@ Kudu client development package
 %endif
 
 %prep
-%setup -n %{name}-%{kudu_patched_version}
+%setup -n apache-%{name}-%{kudu_version}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %build
-env FULL_VERSION=%{kudu_patched_version} bash %{SOURCE1}
+env FULL_VERSION=%{kudu_version} bash %{SOURCE1}
 
 %install
 %__rm -rf $RPM_BUILD_ROOT
