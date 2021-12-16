@@ -52,8 +52,8 @@ if [ -z "$GIT_REPO" ]; then
     fi
 
     # Don't clean non-cmake artifacts, the debug binaries will be packaged.
-    clean_cmake_files
-    ./bin/make_release.sh -notests -build_static_libs
+#    clean_cmake_files
+#    ./bin/make_release.sh -notests -build_static_libs
 else
     rm -rf build impala-${FULL_VERSION}
     ALL_FILES=`echo *`

@@ -232,20 +232,20 @@ if [ "$1" = 0 ]; then
     %{alternatives_cmd} --remove %{name} /usr/lib/impala/sbin-debug || :
 fi
 
-%post udf-devel
-%{alternatives_cmd} --install %{_libdir}/libImpalaUdf.a libImpalaUdf %{_libdir}/libImpalaUdf-retail.a  20
-%{alternatives_cmd} --install %{_libdir}/libImpalaUdf.a libImpalaUdf %{_libdir}/libImpalaUdf-debug.a 10
+#%post udf-devel
+#%{alternatives_cmd} --install %{_libdir}/libImpalaUdf.a libImpalaUdf %{_libdir}/libImpalaUdf-retail.a  20
+#%{alternatives_cmd} --install %{_libdir}/libImpalaUdf.a libImpalaUdf %{_libdir}/libImpalaUdf-debug.a 10
 
-%preun udf-devel
-if [ "$1" = 0 ]; then
-    %{alternatives_cmd} --remove libImpalaUdf %{_libdir}/libImpalaUdf-retail.a || :
-    %{alternatives_cmd} --remove libImpalaUdf %{_libdir}/libImpalaUdf-debug.a || :
-fi
+#%preun udf-devel
+#if [ "$1" = 0 ]; then
+#    %{alternatives_cmd} --remove libImpalaUdf %{_libdir}/libImpalaUdf-retail.a || :
+#    %{alternatives_cmd} --remove libImpalaUdf %{_libdir}/libImpalaUdf-debug.a || :
+#fi
 
 %files udf-devel
 %defattr(-,root,root)
 %{_includedir}/impala_udf
-%{_libdir}/libImpalaUdf*.a
+# %{_libdir}/libImpalaUdf*.a
 
 %files shell
 %defattr(-,root,root)

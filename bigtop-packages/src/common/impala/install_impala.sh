@@ -98,7 +98,7 @@ for var in PREFIX BUILD_DIR; do
   fi
 done
 
-. ${EXTRA_DIR}/packaging_functions.sh
+#. ${EXTRA_DIR}/packaging_functions.sh
 
 ETC_DIR=${ETC_DIR:-$PREFIX/etc}
 LIB_DIR=${LIB_DIR:-$PREFIX/usr/lib/impala}
@@ -116,17 +116,17 @@ install -d -m 0755 ${LIB_DIR}
 
 # install daemons
 install -d -m 0755 ${LIB_DIR}/sbin-retail
-cp be/build/release/service/* ${LIB_DIR}/sbin-retail
-ln -s impalad ${LIB_DIR}/sbin-retail/statestored
-ln -s impalad ${LIB_DIR}/sbin-retail/catalogd
-rm ${LIB_DIR}/sbin-retail/*.a
+cp -d be/build/latest/service/* ${LIB_DIR}/sbin-retail
+#ln -s ${LIB_DIR}/sbin-retail/impalad ${LIB_DIR}/sbin-retail/statestored
+#ln -s ${LIB_DIR}/sbin-retail/impalad ${LIB_DIR}/sbin-retail/catalogd
+#rm ${LIB_DIR}/sbin-retail/*.a
 
 # install debug bits
 install -d -m 0755 ${LIB_DIR}/sbin-debug
-cp be/build/debug/service/* ${LIB_DIR}/sbin-debug
-ln -s impalad ${LIB_DIR}/sbin-debug/statestored
-ln -s impalad ${LIB_DIR}/sbin-debug/catalogd
-rm ${LIB_DIR}/sbin-debug/*.a
+cp -d be/build/debug/service/* ${LIB_DIR}/sbin-debug
+#ln -s ${LIB_DIR}/sbin-debug/impalad ${LIB_DIR}/sbin-debug/statestored
+#ln -s ${LIB_DIR}/sbin-debug/impalad ${LIB_DIR}/sbin-debug/catalogd
+#rm ${LIB_DIR}/sbin-debug/*.a
 
 # install scripts
 install -d -m 0755 ${LIB_DIR}/bin
@@ -154,7 +154,7 @@ find ${IMPALA_TOOLCHAIN} -name "libkudu_client.so.*" -not -path "*debug*" -exec 
 # legacy platforms which don't have OpenSSL 1.0.0 installed by default. We include
 # them even on platforms which have OpenSSL 1.0.0 in case the user wants to override
 # the behavior at runtime with env variable USE_PACKAGE_OPENSSL.
-mkdir ${LIB_DIR}/lib/openssl
+mkdir -p ${LIB_DIR}/lib/openssl
 find ${IMPALA_TOOLCHAIN} -name "libssl.so*" -exec cp -L {} ${LIB_DIR}/lib/openssl \;
 find ${IMPALA_TOOLCHAIN} -name "libcrypto.so*" -exec cp -L {} ${LIB_DIR}/lib/openssl \;
 
@@ -192,7 +192,7 @@ rm -f $DEPENDENCY_DIR/hive-shims-0.23*.jar $DEPENDENCY_DIR/hadoop-core*.jar;
 for file in $DEPENDENCY_DIR/libhdfs*.so*; do symlink_lib $file ../${NATIVE_LIB_DIR}; done
 for file in $DEPENDENCY_DIR/libhadoop*.so*; do symlink_lib $file hadoop/lib/native; done
 
-external_versionless_symlinks 'impala' ${LIB_DIR}/lib
+#external_versionless_symlinks 'impala' ${LIB_DIR}/lib
 
 # install Impala shell
 install -d -m 0755 ${LIB_DIR}-shell
@@ -343,9 +343,9 @@ rm ${PREFIX}/${SYSTEM_INCLUDE_DIR}/impala_udf/udf-internal.h
 for header_file in ${PREFIX}/${SYSTEM_INCLUDE_DIR}/impala_udf/*.h; do
     sed -i -e 's@#include "udf/\(.*\.h\)"@#include <impala_udf/\1>@' ${header_file}
 done
-install -d -m 0755 ${PREFIX}/${SYSTEM_LIB_DIR}
-cp be/build/release/udf/libImpalaUdf.a ${PREFIX}/${SYSTEM_LIB_DIR}/libImpalaUdf-retail.a
-cp be/build/debug/udf/libImpalaUdf.a ${PREFIX}/${SYSTEM_LIB_DIR}/libImpalaUdf-debug.a
+#install -d -m 0755 ${PREFIX}/${SYSTEM_LIB_DIR}
+#cp be/build/release/udf/libImpalaUdf.a ${PREFIX}/${SYSTEM_LIB_DIR}/libImpalaUdf-retail.a
+#cp be/build/debug/udf/libImpalaUdf.a ${PREFIX}/${SYSTEM_LIB_DIR}/libImpalaUdf-debug.a
 
 if [ -d thirdparty ]; then
   NOTICES_SOURCE=thirdparty
@@ -360,5 +360,5 @@ for notice in ${NOTICES}; do
 done
 
 # Cloudera specific
-install -d -m 0755 $LIB_DIR/cloudera
-cp cloudera/cdh_version.properties $LIB_DIR/cloudera/
+#install -d -m 0755 $LIB_DIR/cloudera
+#cp cloudera/cdh_version.properties $LIB_DIR/cloudera/
